@@ -1,4 +1,4 @@
-# azure-ai-search-mcp
+# azure-ai-search-mcp-main-with-firecrawl
 
 An MCP (Model Context Protocol) server that wraps the
 [`azure_ai_search`](../azure_ai_search) hybrid-search script.
