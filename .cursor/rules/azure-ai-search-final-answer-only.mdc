@@ -1,0 +1,53 @@
+---
+description: When calling the azure-ai-search MCP `search` tool, only show the user the final answer from the pipeline trace.
+alwaysApply: true
+---
+
+# azure-ai-search: final answer only
+
+The `user-azure-ai-search.search` tool always returns the full hybrid-search
+pipeline trace (Step A language analysis, Step B BM25, Step C vector search,
+Step D RRF fusion, Step E semantic reranking, and then a `FINAL ANSWER`
+block).
+
+When the user asks a question that you answer by calling this tool, **only
+surface the content of the `FINAL ANSWER` section** to the user. Do not
+include Steps A–E, do not include rerank/BM25/cosine scores, and do not add
+your own explanation unless the user explicitly asks for it.
+
+## How to extract the final answer
+
+The tool output contains a delimiter line that looks like:
+
+```
+================================================================================
+  FINAL ANSWER
+================================================================================
+```
+
+Everything after that delimiter (the `Best match`, `Score`, and the
+`+-- Chunk text --+` block) is the final answer. The chunk text is the
+substantive content — strip the leading `|  ` prefix from each line and
+present just that to the user as the answer.
+
+## Example
+
+Tool call: `user-azure-ai-search.search` with
+`query: "How do I remove the monitoring software from my computer?"`
+
+✅ GOOD — respond with just the chunk text, cleanly formatted:
+
+> ### Step 3: Create Monitored App Groups
+>
+> 1. Go to **Settings > Employees > App groups**
+> 2. Click **Add App Group**
+> 3. ...
+
+❌ BAD — do not dump the Step A / B / C / D / E trace into the chat.
+
+## Exceptions
+
+If the user explicitly asks for the pipeline trace, scoring details, BM25
+breakdown, vector scores, RRF fusion, reranking, or says things like "show
+me the full output", "show the steps", "explain how it got there", then
+return the full tool output verbatim.
