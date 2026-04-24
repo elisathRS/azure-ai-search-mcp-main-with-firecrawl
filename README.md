@@ -4,10 +4,14 @@ An MCP (Model Context Protocol) server that wraps the
 [`azure_ai_search`](../azure_ai_search) hybrid-search script.
 
 On startup the server imports the markdown files from `files_converted/`
-exactly the same way the original script does -- language analyzer, inverted
+exactly the same way the original script does — language analyzer, inverted
 index, BM25 scoring, sentence-transformer embeddings, cross-encoder reranker,
-all built in-memory. It then exposes a single MCP tool, `search(query)`, that
-returns the full step-by-step pipeline trace for any query you send it.
+all built in-memory. It then exposes two MCP tools:
+
+| Tool | Description |
+|------|-------------|
+| `search(query)` | Hybrid-search the indexed corpus and return the full pipeline trace |
+| `add_url(url)` | Scrape a URL with Firecrawl, save it as Markdown, and rebuild the index |
 
 ## Pipeline (unchanged from the original script)
 
@@ -21,6 +25,53 @@ returns the full step-by-step pipeline trace for any query you send it.
 | 6     | Vector Search        | Cosine similarity nearest neighbors (L1 vector leg)     |
 | 7     | Hybrid Merge (RRF)   | Reciprocal Rank Fusion combines both legs               |
 | 8     | Semantic Reranking   | Cross-encoder reranks top results (L2)                  |
+
+---
+
+## `add_url` tool
+
+The original server only exposed `search`. A second tool, `add_url`, was added
+to let you grow the corpus from inside the chat — no file system access needed.
+
+### What it does
+
+1. **Scrape** — calls Firecrawl (`V1FirecrawlApp.scrape_url`) to download the
+   page and convert it to clean Markdown (`only_main_content=True`).
+2. **Save** — writes the result as a `.md` file in `files_converted/`, using
+   the page's `# H1` heading (or the URL slug as a fallback) as the filename.
+3. **Rebuild** — calls `_build_engine()` so the new document is immediately
+   searchable through `search`.
+
+```python
+@mcp.tool()
+def add_url(url: str) -> str:
+    app = V1FirecrawlApp(api_key=api_key)
+    result = app.scrape_url(url, formats=["markdown"], only_main_content=True)
+
+    # Save the file
+    (Path(DOCS_DIR) / filename).write_text(md, encoding="utf-8")
+
+    # Rebuild the index so it becomes searchable immediately
+    _engine = _build_engine()
+```
+
+### Full workflow from the chat
+
+1. User writes: `"Add this URL: https://..."`
+2. Claude Desktop calls the `add_url` tool.
+3. `add_url` calls Firecrawl using the key from the config.
+4. Firecrawl scrapes the page and returns Markdown content.
+5. The `.md` file is saved in `files_converted/`.
+6. The index is rebuilt (BM25 + embeddings).
+7. The page is now immediately searchable via the `search` tool.
+
+### Requirements
+
+`add_url` requires the `firecrawl-py` package and a **Firecrawl API key**
+passed through the server environment (see [Configuration](#configuration)
+below).
+
+---
 
 ## Project layout
 
@@ -70,7 +121,7 @@ Add this block to your Cursor MCP config (Cursor → Settings → MCP →
 ```
 
 Restart Cursor. You should see `azure-ai-search` listed under MCP Servers
-with one tool: `search`.
+with two tools: `search` and `add_url`.
 
 ### 3. Index your own documents (optional)
 
@@ -187,10 +238,51 @@ pipeline trace / scores / reranking details.
 
 ## Configuration
 
-All pipeline constants live in `hybrid_search/config.py`:
+### Firecrawl API key (`add_url` only)
+
+`add_url` reads the key from the `FIRECRAWL_API_KEY` environment variable.
+The cleanest way to set it is through `claude_desktop_config.json` so Claude
+Desktop injects it automatically whenever it launches the server.
+
+#### Locate `claude_desktop_config.json`
+
+**Windows** — press `Win + R`, paste `%APPDATA%\Claude`, and open
+`claude_desktop_config.json` with Notepad or VS Code.
+
+**macOS** — open Finder, press `Cmd + Shift + G`, paste
+`~/Library/Application Support/Claude`, and open `claude_desktop_config.json`
+with TextEdit or your preferred editor.
+
+#### Add the `env` block
+
+```json
+{
+  "mcpServers": {
+    "azure-ai-search": {
+      "command": "...",
+      "args": ["..."],
+      "env": {
+        "FIRECRAWL_API_KEY": "fc-your-key-here"
+      }
+    }
+  }
+}
+```
+
+The server reads it with `os.environ.get("FIRECRAWL_API_KEY")` — the user
+never has to type the key manually in the chat.
+
+### Pipeline constants
+
+All pipeline tuning constants live in `hybrid_search/config.py`:
 
 - `EMBEDDING_MODEL` — sentence-transformer for the vector leg
 - `CROSS_ENCODER_MODEL` — cross-encoder for semantic reranking
 - `BM25_K1`, `BM25_B` — BM25 saturation / length-norm
 - `RRF_K`, `TOP_K`, `RERANK_TOP_N` — fusion / retrieval sizes
 - `DOCS_DIR` — overridable via the `DOCS_DIR` environment variable
+
+Environment variables read at runtime:
+
+- `FIRECRAWL_API_KEY` — required only by the `add_url` tool; set it in
+  `claude_desktop_config.json` (see above)
