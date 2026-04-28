@@ -57,7 +57,8 @@ This server exposes high-utility tools to your AI agent:
       }
     }
     ```
-3.  **Run**: Enable the integration in the chat and start searching your local files.
+3.  **Detailed Guide**: For a step-by-step walkthrough of this local setup, visit: [Local Hybrid Search with LM Studio and MCP](https://guides.enddesk.com/docs/nlp/running-locally/local-hybrid-search).
+4.  **Run**: Enable the integration in the chat and start searching your local files.
 
 ### Option B: Cloud-Connected (Cursor / Claude Desktop)
 1.  **Build**: `docker build -t azure-ai-search-mcp .`
