@@ -75,7 +75,21 @@ The `search` tool is verbose by design to provide transparency into the scoring 
 ---
 
 ## 🧪 Demo Queries
-Try these to see the hybrid engine in action:
-* **Keyword Focus**: `AppDXHelper.exe` (Finds exact technical strings).
-* **Semantic Focus**: `How do I remove the monitoring software?` (Finds "uninstall" via vector similarity).
-* **Hybrid Focus**: `Registry keys for browser extension` (Combines specific terms with conceptual intent).
+
+Once the MCP is connected in Cursor/Claude, paste any of these prompts into the chat. Cursor will call the `search` tool with the query and print the full pipeline trace (BM25 breakdown, cosine scores, RRF fusion, cross-encoder reranking, final winner).
+
+* `AppDXHelper.exe`
+* `How do I remove the monitoring software from my computer?`
+* `How do I enable debug logging for the ControlUp agent?`
+* `What steps are needed to set up browser monitoring on Windows?`
+* `What registry keys does the browser extension configure?`
+
+### Why these five?
+Each one stresses a different leg of the pipeline:
+* **AppDXHelper.exe** — Exact keyword match; BM25 shines, while embeddings might dilute it.
+* **How do I remove the monitoring software?** — Vocabulary mismatch (docs say "uninstall", not "remove"); the vector leg shines.
+* **How do I enable debug logging?** — Specific procedural question; hybrid retrieval picks up both signals.
+* **What steps for browser monitoring?** — Broad conceptual question; vector + reranker do the heavy lifting.
+* **What registry keys?** — Mixed: keyword (registry) + conceptual intent.
+
+Feel free to ask your own questions too — anything grounded in the markdown files under `files_converted/` should work.
