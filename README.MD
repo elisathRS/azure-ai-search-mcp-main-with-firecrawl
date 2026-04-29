@@ -130,3 +130,7 @@ Follow the evolution of the project through its dedicated phase repositories:
 > **[View Phase 2 Repository ↗](https://github.com/oduenas-enddesk/azure-ai-search-mcp)**
 > Contains the implementation for the Model Context Protocol, enabling seamless interaction between the search indexes and AI agents.
 
+### 🔹 Phase 3: Firecrawl Integration (Current)
+> **[View Phase 3 Repository ↗](https://github.com/elisathRS/azure-ai-search-mcp-main-with-firecrawl)**
+> Introduces dynamic knowledge expansion. This phase allows the system to automatically extract clean web data from a URL, save it as Markdown, and instantly update the search engine without manual file handling
+
