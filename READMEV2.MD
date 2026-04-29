@@ -28,6 +28,8 @@ This server exposes high-utility tools to your AI agent:
 | 7     | Hybrid Merge (RRF)   | Reciprocal Rank Fusion combines both legs               |
 | 8     | Semantic Reranking   | Cross-encoder reranks top results (L2)                  |
 
+**Detailed Guides**: For an in-depth explanation of these concepts, visit: [Azure AI Search: NLP at Scale](https://guides.enddesk.com/docs/nlp/azure-ai-search/introduction) and [Hybrid Search: Building the Pipeline from Scratch](https://guides.enddesk.com/docs/nlp/azure-ai-search/hybrid-search)
+
 ---
 
 ## 🛠️ The Multi-Phase Pipeline
@@ -77,6 +79,7 @@ Designed for privacy-conscious environments, this server supports a fully offlin
 ### Option B: Cloud-Connected (Cursor / Claude Desktop)
 1.  **Build**: `docker build -t azure-ai-search-mcp .`
 2.  **Environment**: Add your `FIRECRAWL_API_KEY` to your MCP configuration's `env` block to enable the scraping tool.
+3.  **Detailed Guide**: For a step-by-step walkthrough of how to configure Firecrawl, visit: [Firecrawl Configuration](https://github.com/elisathRS/azure-ai-search-mcp-main-with-firecrawl/blob/main/firecrawl_configuration.md).
 
 ---
 
