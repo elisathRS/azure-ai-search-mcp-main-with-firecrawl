@@ -4,13 +4,29 @@ A professional-grade simulation of the **Azure AI Search Hybrid Search** pipelin
 
 This project bridges the gap between sophisticated search architectures and local AI workflows. It implements a multi-stage retrieval pipeline (BM25 + Vector + RRF + Reranking) that can run either via cloud-connected agents (Cursor/Claude) or as a **100% private, offline stack** using LM Studio.
 
-## 🏗️ Architecture & Privacy: "No Data Leaves the Machine"
+## MCP Tools
 
-Designed for privacy-conscious environments, this server supports a fully offline runtime topology:
+This server exposes high-utility tools to your AI agent:
 
-* **Offline Boundary**: All processing happens on your local GPU/CPU.
-* **Local Corpus**: Processes your `.md` files mounted directly from your machine.
-* **Privacy First**: Once models are cached, you can disable internet access. Your knowledge base and queries never leave your hardware.
+| Tool | Description |
+|------|-------------|
+| `search(query)` | Hybrid-search the indexed corpus and return the full pipeline trace |
+| `add_url(url)` | Scrape a URL with Firecrawl, save it as Markdown, and rebuild the index |
+
+---
+
+## Pipeline (unchanged from the original script)
+
+| Phase | Stage                | What it does                                            |
+|-------|----------------------|---------------------------------------------------------|
+| 1     | Document Ingestion   | Load `.md` files from `files_converted/`                |
+| 2     | Chunking             | Split docs into section-level passages                  |
+| 3     | Full-Text Indexing   | Tokenize, stem, remove stop words, build inverted index |
+| 4     | BM25 Scoring         | Rank by keyword relevance (L1 keyword leg)              |
+| 5     | Vector Indexing      | Generate embeddings for each chunk                      |
+| 6     | Vector Search        | Cosine similarity nearest neighbors (L1 vector leg)     |
+| 7     | Hybrid Merge (RRF)   | Reciprocal Rank Fusion combines both legs               |
+| 8     | Semantic Reranking   | Cross-encoder reranks top results (L2)                  |
 
 ---
 
@@ -27,19 +43,17 @@ The engine replicates the advanced retrieval logic of Azure AI Search through th
 
 ---
 
-## 🔧 MCP Tools
+## Architecture & Privacy: "No Data Leaves the Machine"
 
-This server exposes high-utility tools to your AI agent:
+Designed for privacy-conscious environments, this server supports a fully offline runtime topology:
 
-* **`search(query)`**: Executes the full hybrid pipeline and returns a detailed trace + the final answer.
-* **`add_url(url)`**: 
-    1. Scrapes a webpage using Firecrawl.
-    2. Converts it to clean Markdown.
-    3. Saves it to your local corpus and rebuilds the engine in real-time.
+* **Offline Boundary**: All processing happens on your local GPU/CPU.
+* **Local Corpus**: Processes your `.md` files mounted directly from your machine.
+* **Privacy First**: Once models are cached, you can disable internet access. Your knowledge base and queries never leave your hardware.
 
 ---
 
-## 🚀 Setup & Installation
+## Setup & Installation
 
 ### Option A: Fully Local Stack (LM Studio + Docker)
 *Best for total privacy and offline use.*
@@ -66,7 +80,7 @@ This server exposes high-utility tools to your AI agent:
 
 ---
 
-## 📝 UX Optimization: "Final Answer Only"
+## UX Optimization: "Final Answer Only"
 
 The `search` tool is verbose by design to provide transparency into the scoring logic. To keep your chat UI clean, we include a **Portable System Rule**:
 
@@ -75,7 +89,7 @@ The `search` tool is verbose by design to provide transparency into the scoring 
 
 ---
 
-## 🧪 Demo Queries
+## Demo Queries
 
 Once the MCP is connected in Cursor/Claude, paste any of these prompts into the chat. Cursor will call the `search` tool with the query and print the full pipeline trace (BM25 breakdown, cosine scores, RRF fusion, cross-encoder reranking, final winner).
 
