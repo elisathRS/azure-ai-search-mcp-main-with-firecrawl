@@ -228,6 +228,8 @@ Feel free to ask your own questions too — anything grounded in the markdown fi
 
 ## Video Walkthrough
 
+<img src='walkthrough_video.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
 ---
 
 ## Development Roadmap & Repositories
