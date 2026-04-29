@@ -116,3 +116,17 @@ Feel free to ask your own questions too — anything grounded in the markdown fi
 
 ## Video Walkthrough
 
+---
+
+## Development Roadmap & Repositories
+
+Follow the evolution of the project through its dedicated phase repositories:
+
+### 🔹 Phase 1: Core Azure AI Search
+> **[View Phase 1 Repository ↗](https://github.com/oduenas-enddesk/azure_ai_search)**
+> Focuses on structuring the initial indexes, data connections, and backend search logic.
+
+### 🔹 Phase 2: MCP Server Implementation
+> **[View Phase 2 Repository ↗](https://github.com/oduenas-enddesk/azure-ai-search-mcp)**
+> Contains the implementation for the Model Context Protocol, enabling seamless interaction between the search indexes and AI agents.
+
