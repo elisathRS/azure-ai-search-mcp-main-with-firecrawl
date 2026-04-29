@@ -32,7 +32,7 @@ This server exposes high-utility tools to your AI agent:
 
 ---
 
-## 🛠️ The Multi-Phase Pipeline
+## The Multi-Phase Pipeline
 
 The engine replicates the advanced retrieval logic of Azure AI Search through three distinct phases of development:
 
@@ -111,3 +111,8 @@ Each one stresses a different leg of the pipeline:
 * **What registry keys?** — Mixed: keyword (registry) + conceptual intent.
 
 Feel free to ask your own questions too — anything grounded in the markdown files under `files_converted/` should work.
+
+---
+
+## Video Walkthrough
+
