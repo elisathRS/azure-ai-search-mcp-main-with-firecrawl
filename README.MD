@@ -1,8 +1,120 @@
-# Azure AI Search MCP Server (with Firecrawl & Local Stack)
+# 📘 MCP Local Search Server (Azure AI Search Simulation)
 
-A professional-grade simulation of the **Azure AI Search Hybrid Search** pipeline, packaged as a Model Context Protocol (MCP) server. 
+## Overview
 
-This project bridges the gap between sophisticated search architectures and local AI workflows. It implements a multi-stage retrieval pipeline (BM25 + Vector + RRF + Reranking) that can run either via cloud-connected agents (Cursor/Claude) or as a **100% private, offline stack** using LM Studio.
+This project provides a lightweight **MCP (Model Context Protocol) server** that simulates the behavior of Azure AI Search while running entirely in your own environment.
+
+It enables you to build a powerful, privacy-first retrieval system where your data stays local, yet can be queried and enhanced using advanced language models like Claude or GPT.
+
+At its core, the MCP server exposes a **search tool** that indexes and retrieves knowledge base content (such as internal documentation or markdown files), allowing LLMs to perform contextual reasoning over your data: effectively enabling a **Retrieval-Augmented Generation (RAG)** workflow without relying on external cloud search services.
+
+---
+
+## ⚙️ Key Features
+
+- **Local Search Engine Simulation**  
+  Mimics Azure AI Search capabilities for indexing and querying structured/unstructured data.
+
+- **LLM Integration**  
+  Works seamlessly with public models like Claude or GPT for enhanced reasoning over your private data.
+
+- **Full Local RAG Support**  
+  Includes guidance for integrating with LM Studio, enabling a completely offline pipeline using local models.
+
+- **Web Content Ingestion (`add_url`)**  
+  Uses Firecrawl to:
+  - Scrape web pages  
+  - Convert them into Markdown  
+  - Automatically ingest them into your local search index  
+
+- **Markdown-Based Knowledge Base**  
+  Simple, portable, and developer-friendly format for storing and querying data.
+
+---
+
+## 🚀 How It Works
+
+1. **Ingest Data**
+   - Add local files or scrape web content via `add_url`
+
+2. **Index Content**
+   - Content is processed and stored as searchable markdown
+
+3. **Query via MCP**
+   - LLMs call the MCP search tool to retrieve relevant context
+
+4. **Generate Responses**
+   - Models combine retrieved data with reasoning to produce answers
+
+---
+
+## 💡 Use Cases
+
+### 🔒 Private Knowledge Base Search
+Run an internal search system for:
+- Support articles  
+- Runbooks  
+- Internal documentation  
+
+All without exposing sensitive data to external services.
+
+---
+
+### 🤖 AI-Powered Support Assistant
+Create a chatbot that:
+- Answers customer or internal support questions  
+- Uses your real documentation as ground truth  
+- Reduces hallucinations by grounding responses in your data  
+
+---
+
+### 🌐 Website Intelligence & Q&A
+Use `add_url` to:
+- Scrape competitor websites, docs, or public resources  
+- Turn them into a searchable dataset  
+- Ask questions like:  
+  *“What features does this product support?”*
+
+---
+
+### 🧪 Local RAG Development & Testing
+Perfect for:
+- Prototyping RAG systems without cloud dependencies  
+- Testing retrieval strategies locally  
+- Experimenting with embeddings and ranking logic  
+
+---
+
+### 🧠 Fully Offline AI Stack
+Combine with LM Studio to:
+- Run local LLMs  
+- Keep all data and inference on your machine  
+- Achieve a **zero-cloud AI pipeline**  
+
+---
+
+### 📊 DevOps / Troubleshooting Assistant
+Index logs, RCAs, or runbooks and:
+- Query issues in natural language  
+- Correlate past incidents  
+- Speed up debugging workflows  
+
+---
+
+### 📚 Personal Knowledge Management
+Turn your notes, PDFs, and saved articles into:
+- A searchable second brain  
+- An AI assistant that understands your content  
+
+---
+
+## 🎯 Why This Matters
+
+This project bridges the gap between:
+- The **power of modern LLMs**
+- And the **control of local data ownership**
+
+You get the benefits of AI-driven search and reasoning **without sacrificing privacy, cost control, or flexibility**.
 
 ## MCP Tools
 
@@ -15,7 +127,7 @@ This server exposes high-utility tools to your AI agent:
 
 ---
 
-## Pipeline (unchanged from the original script)
+## Pipeline
 
 | Phase | Stage                | What it does                                            |
 |-------|----------------------|---------------------------------------------------------|
@@ -133,4 +245,5 @@ Follow the evolution of the project through its dedicated phase repositories:
 ### 🔹 Phase 3: Firecrawl Integration (Current)
 > **[View Phase 3 Repository ↗](https://github.com/elisathRS/azure-ai-search-mcp-main-with-firecrawl)**
 > Introduces dynamic knowledge expansion. This phase allows the system to automatically extract clean web data from a URL, save it as Markdown, and instantly update the search engine without manual file handling
+
 
